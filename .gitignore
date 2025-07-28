@@ -49,7 +49,8 @@
 
 # The main build output directory for the firmware
 # This typically resides inside the 'firmware/' directory of your project.
-/firmware/build/
+# Ignore any build/ folder recursively
+**/build/
 
 # The generated sdkconfig file
 # This is created/modified by 'idf.py menuconfig' or 'idf.py build'.
