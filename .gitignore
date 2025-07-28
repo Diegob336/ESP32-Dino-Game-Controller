@@ -5,7 +5,6 @@
 *.o
 *.ko
 *.obj
-*.elf
 
 # Linker output
 *.ilk
@@ -41,15 +40,33 @@
 *.su
 *.idb
 *.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# debug information files
 *.dwo
+
+# -----------------------------------------------------------------------------
+# ESP-IDF Specific Ignored Files and Directories
+# (Crucial for ESP32 projects)
+# -----------------------------------------------------------------------------
+
+# The main build output directory for the firmware
+# This typically resides inside the 'firmware/' directory of your project.
+/firmware/build/
+
+# The generated sdkconfig file
+# This is created/modified by 'idf.py menuconfig' or 'idf.py build'.
+# You should track 'sdkconfig.defaults' instead for reproducibility.
+/firmware/sdkconfig
+/firmware/sdkconfig.old 
+
+# Generated binary firmware files
+/firmware/*.bin
+/firmware/*.elf     
+/firmware/*.map   
+/firmware/*.dis
+
+# Temporary files/folders created by ESP-IDF tools
+/firmware/flasher_args.json
+/firmware/flash_project_args
+/firmware/size.json
+
+# If you use Espressif's component manager to install managed components
+/firmware/managed_components/
