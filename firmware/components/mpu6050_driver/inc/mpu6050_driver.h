@@ -2,6 +2,7 @@
 #define MPU6050_DRIVER_H
 
 #include <stdint.h>
+#include "driver/i2c_master.h"
 
 #define MPU6050_ADDR                          0x68
 
@@ -59,11 +60,44 @@ typedef struct {
 
 }MPU6050_data_t;
 
+typedef struct {
+	uint8_t smplrt_div;
+	uint8_t config;
+	uint8_t gyro_config;
+	uint8_t accel_config;
+	uint8_t fifo_en;
+	float lsb_per_g;
+	float lsb_per_deg;
+} MPU6050_Config_t;
 
 typedef struct {
  	MPU6050_data_t mpu_data;
-	uint8_t mpu_register;
- } MPU_Handle_t;
+	MPU6050_Config_t mpu_config;
+ } MPU6050_Handle_t;
+
+//config related macros
+#define SMPLRT_DIV_DEFAULT                   0x07
+
+#define DLPF_CFG_260Hz                        0
+#define DLPF_CFG_184Hz                        1
+#define DLPF_CFG_94Hz                         2
+#define DLPF_CFG_44Hz                         3
+#define DLPF_CFG_21Hz                         4
+#define DLPF_CFG_10Hz                         5
+#define DLPF_CFG_5Hz                          6
+
+#define GYRO_FSR_250                          0
+#define GYRO_FSR_500                          1
+#define GYRO_FSR_1000                         2
+#define GYRO_FSR_2000                         3
+
+//General macros
+#define WAKE_UP_VAL                           0
+
+void writeToMPU6050(i2c_master_dev_handle_t *dev_handle, uint8_t addr, uint8_t val);
+void MPU6050_Init(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t *dev_handle);
+void MPU6050_Read_All_Sensor_Data(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t *dev_handle);
+ 
 
 
 #endif
