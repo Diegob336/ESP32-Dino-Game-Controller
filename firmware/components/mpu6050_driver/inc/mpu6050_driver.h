@@ -73,6 +73,12 @@ typedef struct {
 typedef struct {
  	MPU6050_data_t mpu_data;
 	MPU6050_Config_t mpu_config;
+	float accel_x_offset;
+	float accel_y_offset;
+	float accel_z_offset;
+	float gyro_x_offset;
+	float gyro_y_offset;
+	float gyro_z_offset;
  } MPU6050_Handle_t;
 
 //config related macros

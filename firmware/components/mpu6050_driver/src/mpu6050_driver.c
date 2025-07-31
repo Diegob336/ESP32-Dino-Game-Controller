@@ -83,13 +83,13 @@ void MPU6050_Read_All_Sensor_Data(MPU6050_Handle_t *MPUHandle, i2c_master_dev_ha
 	int16_t raw_gyro_y = (sensor_data[10] << 8) | sensor_data[11];
 	int16_t raw_gyro_z = (sensor_data[12] << 8) | sensor_data[13];
 
-	MPUHandle->mpu_data.accel_x = (float)raw_accel_x / lsb_per_g;
-	MPUHandle->mpu_data.accel_y  = (float)raw_accel_y / lsb_per_g;
-	MPUHandle->mpu_data.accel_z  = (float)raw_accel_z / lsb_per_g;
+	MPUHandle->mpu_data.accel_x = ((float)raw_accel_x / lsb_per_g) - MPUHandle->accel_x_offset;
+	MPUHandle->mpu_data.accel_y = ((float)raw_accel_y / lsb_per_g) - MPUHandle->accel_y_offset;
+	MPUHandle->mpu_data.accel_z = ((float)raw_accel_z / lsb_per_g) - MPUHandle->accel_z_offset;
 
-	MPUHandle->mpu_data.gyro_x = (float)raw_gyro_x / lsb_per_deg;
-	MPUHandle->mpu_data.gyro_y = (float)raw_gyro_y / lsb_per_deg;
-	MPUHandle->mpu_data.gyro_z = (float)raw_gyro_z / lsb_per_deg;
+	MPUHandle->mpu_data.gyro_x = ((float)raw_gyro_x / lsb_per_deg) - MPUHandle->gyro_x_offset;
+	MPUHandle->mpu_data.gyro_y = ((float)raw_gyro_y / lsb_per_deg) - MPUHandle->gyro_y_offset;
+	MPUHandle->mpu_data.gyro_z = ((float)raw_gyro_z / lsb_per_deg) - MPUHandle->gyro_z_offset;
 
 
 }
