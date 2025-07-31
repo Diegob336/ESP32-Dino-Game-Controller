@@ -91,13 +91,19 @@ typedef struct {
 #define GYRO_FSR_1000                         2
 #define GYRO_FSR_2000                         3
 
+#define ACCEL_FSR_2G                          0
+#define ACCEL_FSR_4G                          1
+#define ACCEL_FSR_8G                          2
+#define ACCEL_FSR_16G                         3
+
+
+
 //General macros
 #define WAKE_UP_VAL                           0
 
-void writeToMPU6050(i2c_master_dev_handle_t *dev_handle, uint8_t addr, uint8_t val);
-void MPU6050_Init(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t *dev_handle);
-void MPU6050_Read_All_Sensor_Data(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t *dev_handle);
+void writeToMPU6050(i2c_master_dev_handle_t dev_handle, uint8_t addr, uint8_t val);
+void MPU6050_Init(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t dev_handle);
+void MPU6050_Read_All_Sensor_Data(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t dev_handle);
  
-
 
 #endif

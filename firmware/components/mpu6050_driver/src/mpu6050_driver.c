@@ -1,12 +1,12 @@
-#include "inc/mpu6050_driver.h"
+#include "mpu6050_driver.h"
 
-void writeToMPU6050(i2c_master_dev_handle_t *dev_handle, uint8_t addr, uint8_t val){
+void writeToMPU6050(i2c_master_dev_handle_t dev_handle, uint8_t addr, uint8_t val){
 	
 	uint8_t data[] = { addr, val };
-	ESP_ERROR_CHECK(i2c_master_transmit(*dev_handle, data, sizeof(data), -1));
+	ESP_ERROR_CHECK(i2c_master_transmit(dev_handle, data, sizeof(data), -1));
 }
 
-void MPU6050_Init(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t *dev_handle ){
+void MPU6050_Init(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t dev_handle ){
 
 	uint8_t smplrt_div = MPUHandle->mpu_config.smplrt_div;
 	uint8_t config = MPUHandle->mpu_config.config;
@@ -64,7 +64,7 @@ void MPU6050_Init(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t *dev_hand
 
 }
 
-void MPU6050_Read_All_Sensor_Data(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t *dev_handle){
+void MPU6050_Read_All_Sensor_Data(MPU6050_Handle_t *MPUHandle, i2c_master_dev_handle_t dev_handle){
 	
 	uint8_t sensor_data[14];
 
@@ -72,7 +72,7 @@ void MPU6050_Read_All_Sensor_Data(MPU6050_Handle_t *MPUHandle, i2c_master_dev_ha
 
 	float lsb_per_deg = MPUHandle->mpu_config.lsb_per_deg;
 	float lsb_per_g = MPUHandle->mpu_config.lsb_per_g;
-	ESP_ERROR_CHECK(i2c_master_transmit_receive(*dev_handle, &reg_addr, 1, sensor_data, 14, -1));
+	ESP_ERROR_CHECK(i2c_master_transmit_receive(dev_handle, &reg_addr, 1, sensor_data, 14, -1));
 
 	// Parse the raw values
 	int16_t raw_accel_x = (sensor_data[0] << 8) | sensor_data[1];
