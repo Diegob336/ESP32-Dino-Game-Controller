@@ -12,9 +12,15 @@ typedef struct {
 	float yaw;
 }MPU6050_Angles_t;
 
-void angle_filter_init( MPU6050_Angles_t *angles);
-void recursive_avg_filter( MPU6050_Angles_t *angles);
-void get_angle(MPU6050_data_t sensor_data, MPU6050_Angles_t *angles);
+typedef struct {
+	float filtered_roll;
+	float filtered_pitch;
+	float alpha;
+}Filtered_angles_t;
+
+void angle_filter_init( Filtered_angles_t *filtered_angles);
+void recursive_avg_filter( MPU6050_Angles_t *angles, Filtered_angles_t *filtered_angles);
+void get_angle(MPU6050_data_t *sensor_data, MPU6050_Angles_t *angles);
 
 
 #endif
