@@ -26,8 +26,14 @@ void get_angle(MPU6050_data_t *sensor_data, MPU6050_Angles_t *angles){
 	
 	angles->roll= atan2(accel_y, accel_z) * (180 / M_PI);
 	angles->pitch = atan2(-accel_x, sqrt(accel_y * accel_y + accel_z * accel_z)) * (180 / M_PI);
-
-
 	
 }
+
+void madgwick_angle_init(Madgwick_Config_t *config, float sample_freq, float beta_gain){
+
+}
+void get_angle_madgwick(MPU6050_data_t *sensor_data, MPU6050_Angles_t *angles){
+
+}
+
 
