@@ -1,10 +1,11 @@
 #include "angle_detection.h"
 
+extern volatile float q0, q1, q2, q3;
 
 void angle_filter_init(Filtered_angles_t *filtered_angles){
 	filtered_angles->filtered_roll = 0.0;
 	filtered_angles->filtered_pitch = 0.0;
-	filtered_angles->alpha = 0.3;
+	filtered_angles->alpha = 0.3; 
 }
 
 
@@ -30,9 +31,31 @@ void get_angle(MPU6050_data_t *sensor_data, MPU6050_Angles_t *angles){
 }
 
 void madgwick_angle_init(Madgwick_Config_t *config, float sample_freq, float beta_gain){
-
+	config->beta_gain = beta_gain;
+	config->sample_frequency = sample_freq;
 }
-void get_angle_madgwick(MPU6050_data_t *sensor_data, MPU6050_Angles_t *angles){
+void get_angle_madgwick(MPU6050_data_t *sensor_data,  Filtered_angles_t *filtered_angles){
+	float accel_x = sensor_data->accel_x;
+	float accel_y = sensor_data->accel_y;
+	float accel_z = sensor_data->accel_z;
+
+	float gyro_x = sensor_data->gyro_x * (M_PI / 180);
+	float gyro_y = sensor_data->gyro_y * (M_PI / 180);
+	float gyro_z = sensor_data->gyro_z * (M_PI / 180);
+	
+	MadgwickAHRSupdateIMU(gyro_x, gyro_y, gyro_z, accel_x, accel_y, accel_z);
+
+	filtered_angles->filtered_roll = atan2f(2.0f * (q0*q1 + q2*q3),
+		1.0f - 2.0f * (q1*q1 + q2*q2)) * (180.0f / M_PI);
+	filtered_angles->filtered_pitch = asinf(2.0f * (q0*q2 - q3*q1)) * (180.0f / M_PI);
+	filtered_angles->filtered_yaw = atan2f(2.0f * (q0*q3 + q1*q2),
+		1.0f - 2.0f * (q2*q2 + q3*q3)) * (180.0f / M_PI);
+
+
+
+
+
+
 
 }
 

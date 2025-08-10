@@ -61,13 +61,17 @@ void app_main(void) {
 	while(1) {
 		MPU6050_Read_All_Sensor_Data( &MPUHandle, dev_handle);
 		get_angle(&MPUHandle.mpu_data, &angles);
-		recursive_avg_filter(&angles, &filtered_angles);
+	//	recursive_avg_filter(&angles, &filtered_angles);
+		get_angle_madgwick(&MPUHandle.mpu_data, &filtered_angles);
+		if (filtered_angles.filtered_pitch > 45.0) {
+			ESP_LOGI("ACTION", "Jump dino jump");
+		}
 
 	//	ESP_LOGI("Sensor Readings", "g_force x: %2f, y: %2f, z: %2f", MPUHandle.mpu_data.accel_x, MPUHandle.mpu_data.accel_y, MPUHandle.mpu_data.accel_z);
 	//	ESP_LOGI("Sensor Readings", "gyro x: %2f, y: %2f, z: %2f", MPUHandle.mpu_data.gyro_x, MPUHandle.mpu_data.gyro_y, MPUHandle.mpu_data.gyro_z);	
 
-		ESP_LOGI("Angle Readings", "Roll: %2f, Pitch: %2f", filtered_angles.filtered_roll, filtered_angles.filtered_pitch);
-		vTaskDelay(pdMS_TO_TICKS(400));
+		ESP_LOGI("Angle Readings", "Roll: %2f, Pitch: %2f, Yaw: %2f", filtered_angles.filtered_roll, filtered_angles.filtered_pitch, filtered_angles.filtered_yaw);
+		vTaskDelay(pdMS_TO_TICKS(10));
 	}
 
 }
