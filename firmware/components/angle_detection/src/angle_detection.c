@@ -50,13 +50,21 @@ void get_angle_madgwick(MPU6050_data_t *sensor_data,  Filtered_angles_t *filtere
 	filtered_angles->filtered_pitch = asinf(2.0f * (q0*q2 - q3*q1)) * (180.0f / M_PI);
 	filtered_angles->filtered_yaw = atan2f(2.0f * (q0*q3 + q1*q2),
 		1.0f - 2.0f * (q2*q2 + q3*q3)) * (180.0f / M_PI);
-
-
-
-
-
-
-
 }
 
+
+uint8_t detect_jump(MPU6050_data_t *sensor_data, Jump_detector_t *jump_detector){
+
+	jump_detector->jump_detected = 0; // reset jump_detected value
+
+	float delta_y = sensor_data->gyro_y - jump_detector->prev_gyro_y;
+
+	if(delta_y > jump_detector->jump_threshold){
+		jump_detector->jump_detected = 1; // set jump_detected to true
+	}
+
+	jump_detector->prev_gyro_y = sensor_data->gyro_y;
+	
+	return jump_detector->jump_detected;
+}
 
