@@ -2,8 +2,10 @@
 
 uint8_t calculate_checksum(uint8_t *data, uint16_t length);
 
+uart_port_t uart_port_num = UART_NUM_0;
+
+
 void Uart_init(){
-	uart_port_t uart_port_num = UART_NUM_0;
 
 	uart_config_t uart_config = {
 		.baud_rate = 115200,
@@ -21,12 +23,17 @@ void Uart_send_command(dino_cmd_t cmd){
 	uint8_t packet[4];
 	packet[0] = UART_COMM_START_BYTE;
 	packet[1] = cmd;
-	packet[2] = calulate_checksum(&cmd, 1); 
+	packet[2] = calculate_checksum((uint8_t *)&cmd, 1); 
 	packet[3] = UART_COMM_END_BYTE;
-}
-void Uart_read_command(){
 
+	int ret = uart_write_bytes(uart_port_num, packet, sizeof(packet));
+	if ( ret == -1) {
+		ESP_LOGE("UART Error", "Error writing bytes to buffer");
+	}else {
+		ESP_LOGI("UART", "Succesfully sent %d bytes", ret);
+	}
 }
+
 
 uint8_t calculate_checksum(uint8_t *data, uint16_t length) {
 	uint8_t sum = 0;

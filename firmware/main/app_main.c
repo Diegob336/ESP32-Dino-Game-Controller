@@ -4,13 +4,9 @@
 #include "esp_log.h"
 #include "mpu6050_driver.h"
 #include "angle_detection.h"
+#include "uart_comm.h"
 
 void readDataTask(void *parameter){
-	
-}
-
-void app_main(void) {
-
 	i2c_master_bus_handle_t bus_handle; 
 
 	i2c_master_bus_config_t bus_config = {
@@ -67,11 +63,13 @@ void app_main(void) {
 		.jump_threshold = 100.0
 	};
 
+	Uart_init();
 
 	while(1) {
 		MPU6050_Read_All_Sensor_Data( &MPUHandle, dev_handle);
 		if (detect_jump(&MPUHandle.mpu_data, &jump_detector)){
 			ESP_LOGI("ACTION", "JUMP detected");
+			Uart_send_command(JUMP);
 		}
 	//	get_angle(&MPUHandle.mpu_data, &angles);
 	//	recursive_avg_filter(&angles, &filtered_angles);
@@ -86,5 +84,13 @@ void app_main(void) {
 	//	ESP_LOGI("Angle Readings", "Roll: %2f, Pitch: %2f, Yaw: %2f", filtered_angles.filtered_roll, filtered_angles.filtered_pitch, filtered_angles.filtered_yaw);
 		vTaskDelay(pdMS_TO_TICKS(10));
 	}
+	
+
+}
+
+void app_main(void) {
+	
+	xTaskCreatePinnedToCore(&readDataTask, "read sensor data", 2048, NULL, 0, NULL, 1);
+
 
 }

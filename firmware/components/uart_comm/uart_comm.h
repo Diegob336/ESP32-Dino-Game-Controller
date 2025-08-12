@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "driver/uart.h"
+#include "esp_log.h"
 
 #define UART_COMM_START_BYTE    0xAA
 #define UART_COMM_END_BYTE      0x67
@@ -14,6 +15,5 @@ typedef enum {
 
 void Uart_init();
 void Uart_send_command(dino_cmd_t cmd);
-void Uart_read_command();
 
 #endif 
