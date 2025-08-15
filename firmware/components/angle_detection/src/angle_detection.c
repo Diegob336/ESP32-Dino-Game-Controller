@@ -53,18 +53,23 @@ void get_angle_madgwick(MPU6050_data_t *sensor_data,  Filtered_angles_t *filtere
 }
 
 
-uint8_t detect_jump(MPU6050_data_t *sensor_data, Jump_detector_t *jump_detector){
+dino_cmd_t detect_gesture(MPU6050_data_t *sensor_data, Filtered_angles_t *filtered_angles, Gesture_detector_t *gesture_detector){
 
-	jump_detector->jump_detected = 0; // reset jump_detected value
+	gesture_detector->cmd = NO_COMMAND; // reset command value
 
-	float delta_y = sensor_data->gyro_y - jump_detector->prev_gyro_y;
+	float delta_y = sensor_data->gyro_y - gesture_detector->prev_gyro_y;
 
-	if(delta_y > jump_detector->jump_threshold){
-		jump_detector->jump_detected = 1; // set jump_detected to true
+	if((delta_y < -gesture_detector->jump_threshold) && filtered_angles->filtered_pitch < 0){
+		gesture_detector->cmd = JUMP;
+	//	ESP_LOGI("DEBUG", "Current: %f, Previous: %f, Delta: %f", 
+         //sensor_data->gyro_y, gesture_detector->prev_gyro_y, delta_y);
 	}
+	else if (delta_y > gesture_detector->duck_threshold && filtered_angles->filtered_pitch > 0){
+		gesture_detector->cmd = DUCK;
 
-	jump_detector->prev_gyro_y = sensor_data->gyro_y;
+	}
+	gesture_detector->prev_gyro_y = sensor_data->gyro_y;
 	
-	return jump_detector->jump_detected;
+	return gesture_detector->cmd;
 }
 

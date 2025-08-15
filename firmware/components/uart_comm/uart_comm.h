@@ -9,6 +9,7 @@
 #define UART_COMM_END_BYTE      0x67
 
 typedef enum {
+	NO_COMMAND,
 	JUMP,
 	DUCK,
 } dino_cmd_t;

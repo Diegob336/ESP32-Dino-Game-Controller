@@ -2,6 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "mpu6050_driver.h"
 #include "angle_detection.h"
 #include "uart_comm.h"
@@ -57,23 +58,48 @@ void readDataTask(void *parameter){
 
 	MPU6050_Init(&MPUHandle, dev_handle);
 
-	Jump_detector_t jump_detector = {
-		.prev_gyro_x = 0.0,
+	Gesture_detector_t gesture_detector = {
 		.prev_gyro_y = 0.0,
-		.jump_threshold = 100.0
+		.jump_threshold = 100.0,
+		.duck_threshold = 100.0
 	};
 
 	Uart_init();
 
+
+	uint64_t last_jump_time = 0;
+	uint64_t curr_time;
+
 	while(1) {
+
 		MPU6050_Read_All_Sensor_Data( &MPUHandle, dev_handle);
-		if (detect_jump(&MPUHandle.mpu_data, &jump_detector)){
-			ESP_LOGI("ACTION", "JUMP detected");
-			Uart_send_command(JUMP);
+			
+		get_angle_madgwick(&MPUHandle.mpu_data, &filtered_angles);
+
+		curr_time = esp_timer_get_time();
+		switch (detect_gesture(&MPUHandle.mpu_data, &filtered_angles, &gesture_detector)){
+			case JUMP:
+				// if time differnce is greater than .5 seconds
+				if ((curr_time - last_jump_time) > 500000){
+					ESP_LOGI("GESTURE", "JUMP detected");
+					Uart_send_command(JUMP);
+					last_jump_time = curr_time;
+				}
+				break;
+			case DUCK:
+				if ((curr_time - last_jump_time) > 500000){
+					ESP_LOGI("GESTURE", "DUCK detected");
+					Uart_send_command(DUCK);
+					last_jump_time = curr_time;
+				}
+				break;
+			default:
+				break;
+
 		}
+
 	//	get_angle(&MPUHandle.mpu_data, &angles);
 	//	recursive_avg_filter(&angles, &filtered_angles);
-	//	get_angle_madgwick(&MPUHandle.mpu_data, &filtered_angles);
 	//	if (filtered_angles.filtered_pitch > 45.0) {
 	//		ESP_LOGI("ACTION", "Jump dino jump");
 	//	}
@@ -90,7 +116,7 @@ void readDataTask(void *parameter){
 
 void app_main(void) {
 	
-	xTaskCreatePinnedToCore(&readDataTask, "read sensor data", 2048, NULL, 0, NULL, 1);
+	xTaskCreatePinnedToCore(&readDataTask, "read sensor data", 4096, NULL, 0, NULL, 1);
 
 
 }
