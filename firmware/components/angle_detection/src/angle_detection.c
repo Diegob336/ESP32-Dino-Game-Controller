@@ -61,11 +61,13 @@ dino_cmd_t detect_gesture(MPU6050_data_t *sensor_data, Filtered_angles_t *filter
 
 	if((delta_y < -gesture_detector->jump_threshold) && filtered_angles->filtered_pitch < 0){
 		gesture_detector->cmd = JUMP;
-	//	ESP_LOGI("DEBUG", "Current: %f, Previous: %f, Delta: %f", 
-         //sensor_data->gyro_y, gesture_detector->prev_gyro_y, delta_y);
+		ESP_LOGI("DEBUG", "Current: %f, Previous: %f, Delta: %f", 
+	   sensor_data->gyro_y, gesture_detector->prev_gyro_y, delta_y);
 	}
 	else if (delta_y > gesture_detector->duck_threshold && filtered_angles->filtered_pitch > 0){
 		gesture_detector->cmd = DUCK;
+		ESP_LOGI("DEBUG", "Current: %f, Previous: %f, Delta: %f", 
+	   sensor_data->gyro_y, gesture_detector->prev_gyro_y, delta_y);
 
 	}
 	gesture_detector->prev_gyro_y = sensor_data->gyro_y;

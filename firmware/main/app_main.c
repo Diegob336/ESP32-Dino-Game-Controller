@@ -60,8 +60,8 @@ void readDataTask(void *parameter){
 
 	Gesture_detector_t gesture_detector = {
 		.prev_gyro_y = 0.0,
-		.jump_threshold = 100.0,
-		.duck_threshold = 100.0
+		.jump_threshold = 50.0,
+		.duck_threshold = 50.0
 	};
 
 	Uart_init();
@@ -107,7 +107,7 @@ void readDataTask(void *parameter){
 	//	ESP_LOGI("Sensor Readings", "g_force x: %2f, y: %2f, z: %2f", MPUHandle.mpu_data.accel_x, MPUHandle.mpu_data.accel_y, MPUHandle.mpu_data.accel_z);
 	//	ESP_LOGI("Sensor Readings", "gyro x: %2f, y: %2f, z: %2f", MPUHandle.mpu_data.gyro_x, MPUHandle.mpu_data.gyro_y, MPUHandle.mpu_data.gyro_z);	
 
-	//	ESP_LOGI("Angle Readings", "Roll: %2f, Pitch: %2f, Yaw: %2f", filtered_angles.filtered_roll, filtered_angles.filtered_pitch, filtered_angles.filtered_yaw);
+		ESP_LOGI("Angle Readings", "Roll: %2f, Pitch: %2f, Yaw: %2f", filtered_angles.filtered_roll, filtered_angles.filtered_pitch, filtered_angles.filtered_yaw);
 		vTaskDelay(pdMS_TO_TICKS(10));
 	}
 	
