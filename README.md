@@ -3,6 +3,8 @@
 ## Project Overview
 This project develops a custom hardware controller for the **Chrome Dino Game** using an **ESP32** microcontroller. The controller uses an **MPU6050** to detect user gestures  and transmits commands to a host PC over a simple, robust **serial protocol**.
 
+https://github.com/user-attachments/assets/9c122dc5-483e-4726-9a35-b2e782a918b1
+
 It demonstrates:
 - **Sensor Integration:** Interfacing with an **MPU6050** to acquire real-time motion data.
 - **Gesture Recognition:** Converting raw Gyro readings into **jump/duck** events.
